@@ -17,6 +17,14 @@
     "noUncheckedIndexedAccess": true,
     "baseUrl": "./src"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.cjs",
+    "**/*.mjs",
+    "src/utils/scripts/genresSeeder.js",
+    "src/utils/scripts/genresSeeder.js"
+  ],
   "exclude": ["node_modules"]
 }

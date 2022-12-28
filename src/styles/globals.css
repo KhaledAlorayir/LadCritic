@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+[data-reach-combobox-option][data-highlighted] div {
+  @apply bg-primary-content !important;
+}
+
+[data-reach-combobox-option]:hover div {
+  @apply bg-primary-content !important;
+}

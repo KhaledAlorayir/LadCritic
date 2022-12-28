@@ -13,5 +13,11 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  images: {
+    remotePatterns: [{ protocol: "https", hostname: "media.rawg.io" }],
+  },
+  env: {
+    test: "khaled",
+  },
 };
 export default config;

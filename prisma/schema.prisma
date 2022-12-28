@@ -55,6 +55,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  reviews        Review[]
 }
 
 model VerificationToken {
@@ -63,4 +64,48 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Game {
+  id String @id @default(cuid())
+  rawgId Int @unique
+  slug String @unique
+  name String
+  img String?
+  released String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  reviews Review[]
+  genres GameGenre[]
+}
+
+model Review {
+  id String @id @default(cuid())
+  body String
+  rating Decimal
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  userId String
+  gameId String
+  user User @relation(fields: [userId], references: [id])
+  game Game @relation(fields: [gameId], references: [id])
+
+}
+
+model Genre {
+  id String @id @default(cuid())
+  rawgId Int @unique
+  slug String @unique
+  name String
+  games GameGenre[]
+}
+
+model GameGenre {
+  id String @id @default(cuid())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  gameId String
+  genreId String
+  game Game @relation(fields: [gameId], references: [id])
+  genre Genre @relation(fields: [genreId], references: [id])
 }
