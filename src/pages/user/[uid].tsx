@@ -44,13 +44,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
 };
 
 const User = ({ user }: Props) => {
-  /*
-    TODO:
-     1- pagination
-     2- connect to user profile & review page
-     3- invalidate after insert
-  */
-
   const [page, setPage] = useState(0);
   const { data, isLoading, isSuccess } = trpc.review.userReviews.useQuery({
     page,
@@ -69,7 +62,13 @@ const User = ({ user }: Props) => {
         )}
         <p className="font-mono font-semibold tracking-wide">{user.name}</p>
       </div>
-      <ReviewList data={data} isLoading={isLoading} isSuccess={isSuccess} />
+      <ReviewList
+        data={data}
+        isLoading={isLoading}
+        isSuccess={isSuccess}
+        page={page}
+        setPage={setPage}
+      />
     </div>
   );
 };

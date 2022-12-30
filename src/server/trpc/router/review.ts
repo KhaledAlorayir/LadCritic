@@ -111,4 +111,73 @@ export const reviewRouter = router({
         total_pages: Math.ceil(user._count.reviews / PER_PAGE),
       };
     }),
+
+  deleteReview: protectedProcedure
+    .input(z.string().cuid())
+    .mutation(async ({ ctx, input }) => {
+      const review = await ctx.prisma.review.findUnique({
+        where: {
+          id: input,
+        },
+      });
+
+      if (!review || review.userId !== ctx.session.user.id) {
+        throw new TRPCError({ message: "invalid id", code: "BAD_REQUEST" });
+      }
+
+      return ctx.prisma.review.delete({
+        where: {
+          id: input,
+        },
+      });
+    }),
+
+  gameReviews: publicProcedure
+    .input(
+      z.object({ gameId: z.string().cuid(), page: z.number().nonnegative() })
+    )
+    .query(async ({ ctx, input }) => {
+      const { gameId, page } = input;
+
+      const game = await ctx.prisma.game
+        .findUniqueOrThrow({
+          where: {
+            id: gameId,
+          },
+          include: {
+            reviews: {
+              take: PER_PAGE,
+              skip: page * PER_PAGE,
+              orderBy: {
+                created_at: "desc",
+              },
+              include: {
+                user: true,
+                game: true,
+              },
+            },
+            _count: {
+              select: {
+                reviews: true,
+              },
+            },
+          },
+        })
+        .catch(() => {
+          throw new TRPCError({
+            message: "invalid game id",
+            code: "BAD_REQUEST",
+          });
+        });
+
+      const parsedReviews = game.reviews.map((r) => ({
+        ...r,
+        user: { name: r.user.name, image: r.user.image },
+      }));
+      return {
+        page,
+        reviews: parsedReviews,
+        total_pages: Math.ceil(game._count.reviews / PER_PAGE),
+      };
+    }),
 });
